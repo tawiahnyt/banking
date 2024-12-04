@@ -10,34 +10,33 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  // FormControl,
+  // FormDescription,
+  // FormField,
+  // FormItem,
+  // FormLabel,
+  // FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
+import CustomInput from './ui/CustomInput';
+import { authFormSchema } from '@/lib/utils';
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-})
+
 
 const AuthForm = ({ type }: { type: string}) => {
   const [user, setuser] = useState(null)
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof authFormSchema>>({
+    resolver: zodResolver(authFormSchema),
     defaultValues: {
-      username: "",
+      email: "",
+      password: "",
     },
   })
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof authFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
@@ -75,10 +74,63 @@ const AuthForm = ({ type }: { type: string}) => {
           {/* PlaidLink */}
         </div>
       ) : (
-          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <div className='form-item'>
+                      <FormLabel className='form-label'>
+                        Email
+                      </FormLabel>
+                      <div className="flex w-full flex-col">
+                        <FormControl>
+                          <Input placeholder='Enter your email' className='input-class' {...field} />
+                        </FormControl>
+                        <FormMessage className='form-message mt-2' />
+                      </div>
+                    </div>
+                  )}
+                /> */}
+              <CustomInput
+                name='email'
+                label='Email'
+                placeholder='Enter your email'
+                type='email'
+                control={form.control}
+              />
+              <CustomInput
+                name='password'
+                label='Password'
+                placeholder='Enter your password'
+                type='password'
+                control={form.control}
+              />
+              <Button type="submit">Submit</Button>
+            </form>
+          </Form>
       )}
     </div>
   )
 }
 
 export default AuthForm
+
+{/* <FormField
+  control={form.control}
+  name="email"
+  render={({ field }) => (
+    <div className='form-item'>
+      <FormLabel className='form-label'>
+        Email
+      </FormLabel>
+      <div className="flex w-full flex-col">
+        <FormControl>
+          <Input placeholder='Enter your email' className='input-class' {...field} />
+        </FormControl>
+        <FormMessage className='form-message mt-2' />
+      </div>
+    </div>
+  )}
+/> */}
